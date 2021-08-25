@@ -1,19 +1,23 @@
-import Product from "./models/product.js";
-import User from "./models/user.js";
-import Category from "./models/category.js";
-import userProduct from "./models/userProduct.js";
-import sequlize from "./models/index.js";
+import { Sequelize } from "sequelize";
 
-Category.hasMany(Product, { foreignKey: "category_id", as: "products" });
-Product.belongsTo(Category, { foreignKey: "category_id", as: "category" });
+const { PGDATABASE, PGUSERNAME, PGPASSWORD, PGHOST, PGPORT } = process.env;
 
-Product.belongsToMany(User, { through: { model: userProduct, unique: false } });
-User.belongsToMany(Product, { through: { model: userProduct, unique: false } });
+const sequelize = new Sequelize(PGDATABASE, PGUSERNAME, PGPASSWORD, {
+  host: PGHOST,
+  port: PGPORT,
+  dialect: "postgres",
+});
 
-User.hasMany(userProduct);
-userProduct.belongsTo(User);
+const testConnection = async () => {
+  try {
+    sequelize.authenticate().then(() => {
+      console.log("db is authenticated");
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-Product.hasMany(userProduct);
-userProduct.belongsTo(Product);
+testConnection();
 
-export { Product, sequlize, User, Category, userProduct };
+export default sequelize;
