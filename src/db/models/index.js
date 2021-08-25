@@ -1,4 +1,13 @@
 import Author from "./Author.js";
+import Blog from "./Blog.js";
 import sequelize from "../index.js";
 
-export default { Author, sequelize };
+// Author.beforeCreate(async (user) => {
+//     const hashedPassword = await hashPassword(user.password);
+//     user.password = hashedPassword;
+//   });
+
+Blog.belongsTo(Author);
+Author.hasMany(Blog);
+
+export default { Author, sequelize, Blog };
